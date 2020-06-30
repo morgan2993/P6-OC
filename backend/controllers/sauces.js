@@ -1,13 +1,14 @@
 const Sauce = require('../models/Sauces');
 const fs = require('fs');
-const regex = /[a-zA-Z]/;
+const regex = /[^ \w]/;
 
 
 // Ajouter une sauce
 exports.createSauce = (req, res) => {
     const sauceObject = JSON.parse(req.body.sauce);
-    if (!regex.test(sauceObject.name, sauceObject.manufacturer, sauceObject.description, sauceObject.mainPepper)) {
+    if (regex.test(sauceObject.name, sauceObject.manufacturer, sauceObject.description, sauceObject.mainPepper)) {
         res.status(401).json();
+        debugger;
     } else {
         delete sauceObject._id;
         const sauce = new Sauce({
@@ -45,7 +46,7 @@ exports.modifySauce = (req, res) => {
         ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : {...req.body };
-    if (!regex.test(sauceObject.name, sauceObject.manufacturer, sauceObject.description, sauceObject.mainPepper)) {
+    if (regex.test(sauceObject.name, sauceObject.manufacturer, sauceObject.description, sauceObject.mainPepper)) {
         res.status(401).json();
     } else {
         Sauce.updateOne({ _id: req.params.id }, {...sauceObject, _id: req.params.id })
